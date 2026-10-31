@@ -71,4 +71,12 @@ public class Main {
 
       imprimir("Vehículo (" + tipo + ") registrado en la celda " + (celda + 1) + ".");
    }
+   static int celdaDisponible() {
+      for (int i = 0; i < CAPACIDAD_TOTAL; i++) {
+         if (tipoVehiculo[i] == null) {
+            return i;
+         }
+      }
+      return -1;
+   }
 }

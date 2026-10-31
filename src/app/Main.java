@@ -196,5 +196,52 @@ public class Main {
       celdasOcupadas--;
       celdasLibres++;
    }
+   static long contarDiasCompletos(LocalDateTime ingreso, LocalDateTime salida) {
+      return ChronoUnit.DAYS.between(ingreso, salida);
+   }
 
+   static long calcularHorasRestantes(LocalDateTime cursor, LocalDateTime salida) {
+      long minutosRestantes = Duration.between(cursor, salida).toMinutes();
+      return (minutosRestantes + 59) / 60;
+   }
+
+   static double liquidar(int celda, LocalDateTime salida) {
+      String tipo = tipoVehiculo[celda];
+      LocalDateTime ingreso = fechaIngreso[celda];
+
+      double tarifaHora = tipo.equals(TIPO_CARRO) ? TARIFA_HORA_CARRO : TARIFA_HORA_MOTO;
+      double tarifaDia = tipo.equals(TIPO_CARRO) ? TARIFA_DIA_CARRO : TARIFA_DIA_MOTO;
+
+      long diasACobrar = contarDiasCompletos(ingreso, salida);
+      LocalDateTime cursor = ingreso.plusDays(diasACobrar);
+      long horasACobrar = calcularHorasRestantes(cursor, salida);
+
+      if (horasACobrar >= UMBRAL_HORAS_DIA) {
+         diasACobrar++;
+         horasACobrar = 0;
+      }
+
+      double total = diasACobrar * tarifaDia + horasACobrar * tarifaHora;
+      imprimirFactura(celda, tipo, ingreso, salida, diasACobrar, tarifaDia, horasACobrar, tarifaHora, total);
+      return total;
+   }
+
+   static void imprimirFactura(int celda, String tipo, LocalDateTime ingreso, LocalDateTime salida,
+                               long dias, double tarifaDia, long horas, double tarifaHora, double total) {
+      imprimir("\n========== FACTURA ==========");
+      imprimir("Celda liberada: " + (celda + 1));
+      imprimir("Tipo de vehículo: " + tipo);
+      imprimir("Ingreso: " + ingreso.format(FORMATO_FECHA_HORA));
+      imprimir("Salida:  " + salida.format(FORMATO_FECHA_HORA));
+      if (dias > 0) {
+         imprimir(dias + " día(s) x " + String.format("$%,.0f", tarifaDia)
+                 + " = " + String.format("$%,.0f", dias * tarifaDia));
+      }
+      if (horas > 0) {
+         imprimir(horas + " hora(s) x " + String.format("$%,.0f", tarifaHora)
+                 + " = " + String.format("$%,.0f", horas * tarifaHora));
+      }
+      imprimir("TOTAL A PAGAR: " + String.format("$%,.0f", total));
+      imprimir("=============================\n");
+   }
 }

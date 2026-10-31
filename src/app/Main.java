@@ -54,4 +54,21 @@ public class Main {
    public static void main(String[] args) {
       inicializarArreglos();
    }
+   static void registrarEntrada() {
+      int celda = celdaDisponible();
+      if (celda == -1) {
+         imprimir("El parqueadero está lleno. No es posible registrar el ingreso.");
+         return;
+      }
+
+      String tipo = leerTipoVehiculo();
+      LocalDateTime ingreso = leerFechaHora("Fecha y hora de ingreso (yyyy-MM-dd HH:mm): ");
+
+      tipoVehiculo[celda] = tipo;
+      fechaIngreso[celda] = ingreso;
+      celdasOcupadas++;
+      celdasLibres--;
+
+      imprimir("Vehículo (" + tipo + ") registrado en la celda " + (celda + 1) + ".");
+   }
 }

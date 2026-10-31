@@ -79,4 +79,92 @@ public class Main {
       }
       return -1;
    }
+   static int leerEntero(String mensaje, int minimo, int maximo) {
+      while (true) {
+         System.out.print(mensaje);
+         String texto = SCANNER.nextLine().trim();
+
+         boolean soloDigitos = !texto.isEmpty() && texto.length() <= 9;
+         for (int i = 0; i < texto.length() && soloDigitos; i++) {
+            char c = texto.charAt(i);
+            if (c < '0' || c > '9') {
+               soloDigitos = false;
+            }
+         }
+
+         if (soloDigitos) {
+            int valor = Integer.parseInt(texto);
+            if (valor >= minimo && valor <= maximo) {
+               return valor;
+            }
+         }
+         imprimir("Dato inválido. Ingrese un número entre " + minimo + " y " + maximo + ".");
+      }
+   }
+
+   static String leerTipoVehiculo() {
+      int opcion = leerEntero("Tipo de vehículo (1. Carro, 2. Moto): ", 1, 2);
+      return opcion == 1 ? TIPO_CARRO : TIPO_MOTO;
+   }
+
+   static int leerCelda() {
+      while (true) {
+         int celda = leerEntero("Número de celda (1-" + CAPACIDAD_TOTAL + "): ", 1, CAPACIDAD_TOTAL) - 1;
+         if (tipoVehiculo[celda] != null) {
+            return celda;
+         }
+         imprimir("La celda " + (celda + 1) + " está libre. Indique una celda ocupada.");
+      }
+   }
+
+   static LocalDateTime leerFechaHora(String mensaje) {
+      while (true) {
+         System.out.print(mensaje);
+         String texto = SCANNER.nextLine().trim();
+         if (!formatoFechaHoraValido(texto)) {
+            imprimir("Fecha u hora inválidas. Use yyyy-MM-dd HH:mm y el horario 08:00-22:00.");
+            continue;
+         }
+
+         LocalDateTime fecha = LocalDateTime.parse(texto, FORMATO_FECHA_HORA);
+         if (!fecha.format(FORMATO_FECHA_HORA).equals(texto)) {
+            imprimir("La fecha no existe en el calendario.");
+            continue;
+         }
+         return fecha;
+      }
+   }
+
+   static boolean formatoFechaHoraValido(String texto) {
+      if (texto.length() != 16
+              || texto.charAt(4) != '-'
+              || texto.charAt(7) != '-'
+              || texto.charAt(10) != ' '
+              || texto.charAt(13) != ':') {
+         return false;
+      }
+
+      int anio = leerDigitos(texto, 0, 4);
+      int mes = leerDigitos(texto, 5, 2);
+      int dia = leerDigitos(texto, 8, 2);
+      int hora = leerDigitos(texto, 11, 2);
+      int minuto = leerDigitos(texto, 14, 2);
+
+      return anio >= 1 && mes >= 1 && mes <= 12 && dia >= 1 && dia <= 31
+              && hora >= HORA_APERTURA && hora <= HORA_CIERRE
+              && (hora != HORA_CIERRE || minuto <= 0)
+              && minuto >= 0 && minuto <= 59;
+   }
+
+   static int leerDigitos(String texto, int inicio, int cantidad) {
+      int valor = 0;
+      for (int i = inicio; i < inicio + cantidad; i++) {
+         char caracter = texto.charAt(i);
+         if (caracter < '0' || caracter > '9') {
+            return -1;
+         }
+         valor = valor * 10 + caracter - '0';
+      }
+      return valor;
+   }
 }

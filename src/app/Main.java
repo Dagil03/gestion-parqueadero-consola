@@ -167,4 +167,34 @@ public class Main {
       }
       return valor;
    }
+   static void registrarSalida() {
+      if (celdasOcupadas == 0) {
+         imprimir("No hay vehículos en el parqueadero.");
+         return;
+      }
+
+      int celda = leerCelda();
+      LocalDateTime ingreso = fechaIngreso[celda];
+      String tipo = tipoVehiculo[celda];
+
+      LocalDateTime salida = leerFechaHora("Fecha y hora de salida (yyyy-MM-dd HH:mm): ");
+      while (salida.isBefore(ingreso)) {
+         imprimir("La salida no puede ser anterior al ingreso (" + ingreso.format(FORMATO_FECHA_HORA) + ").");
+         salida = leerFechaHora("Fecha y hora de salida (yyyy-MM-dd HH:mm): ");
+      }
+
+      double total = liquidar(celda, salida);
+
+      if (tipo.equals(TIPO_CARRO)) {
+         recaudoCarros += total;
+      } else {
+         recaudoMotos += total;
+      }
+
+      tipoVehiculo[celda] = null;
+      fechaIngreso[celda] = null;
+      celdasOcupadas--;
+      celdasLibres++;
+   }
+
 }

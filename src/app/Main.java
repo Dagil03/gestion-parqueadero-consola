@@ -53,6 +53,13 @@ public class Main {
 
    public static void main(String[] args) {
       inicializarArreglos();
+      int opcion;
+      do {
+         mostrarMenu();
+         opcion = leerEntero("Seleccione una opción: ", 1, 5);
+         ejecutarOpcion(opcion);
+      } while (opcion != 5);
+      SCANNER.close();
    }
    static void registrarEntrada() {
       int celda = celdaDisponible();
@@ -244,4 +251,46 @@ public class Main {
       imprimir("TOTAL A PAGAR: " + String.format("$%,.0f", total));
       imprimir("=============================\n");
    }
+   static void reporteOcupacion() {
+      imprimir("\n--- Reporte de ocupación ---");
+      imprimir("Celdas ocupadas: " + celdasOcupadas);
+      imprimir("Celdas libres: " + celdasLibres);
+   }
+
+   static void reporteFinanciero() {
+      imprimir("\n--- Reporte financiero ---");
+      imprimir("Total recaudado por carros: " + String.format("$%,.0f", recaudoCarros));
+      imprimir("Total recaudado por motos: " + String.format("$%,.0f", recaudoMotos));
+      imprimir("Total general recaudado: " + String.format("$%,.0f", recaudoCarros + recaudoMotos));
+   }
+
+   static void mostrarMenu() {
+      imprimir("\n===== PARQUEADERO =====");
+      imprimir("1. Registrar entrada");
+      imprimir("2. Registrar salida");
+      imprimir("3. Reporte de ocupación");
+      imprimir("4. Reporte financiero");
+      imprimir("5. Salir");
+   }
+
+   static void ejecutarOpcion(int opcion) {
+      switch (opcion) {
+         case 1:
+            registrarEntrada();
+            break;
+         case 2:
+            registrarSalida();
+            break;
+         case 3:
+            reporteOcupacion();
+            break;
+         case 4:
+            reporteFinanciero();
+            break;
+         default:
+            imprimir("Hasta pronto.");
+      }
+
+   }
+
 }
